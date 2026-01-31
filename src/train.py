@@ -1,6 +1,6 @@
 from data import load_data
 from model import build_model
-
+# Train the dataset 
 def train():
     df = load_data("data/train.csv")
     X = df.drop("Class", axis=1)
