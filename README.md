@@ -49,4 +49,7 @@ Each team member is responsible for implementing a key component of the MLOps pi
   * Project documentation and unit tests
   * *Code:* `README.md`, `tests/`
 
+## Status
+
+Initial project setup and repository structure completed.
 
