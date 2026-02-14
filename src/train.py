@@ -1,7 +1,5 @@
 import json
 import joblib
-import mlflow
-import mlflow.sklearn
 
 from src.data import DataPreprocessor
 from src.features import FeatureEngineer
@@ -10,6 +8,8 @@ from src.evaluation import ModelEvaluator
 
 
 def train(data_path: str):
+    import mlflow
+    import mlflow.sklearn
 
     mlflow.set_experiment("credit_card_fraud_detection")
 
