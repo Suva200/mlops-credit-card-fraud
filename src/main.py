@@ -1,5 +1,10 @@
+from src.train import train
+
+
 def main():
-    print("Hello from mlops-credit-card-fraud!")
+    results = train("data/creditcard.csv")
+    print("\nFinal Results:")
+    print(results)
 
 
 if __name__ == "__main__":
