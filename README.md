@@ -29,6 +29,15 @@ The baseline implementation focuses on correctness, reproducibility, and clarity
 
 The dataset contains **284,807 transactions**, with **492 fraud cases (0.17%)** and **30 numerical features**.
 
+Download the dataset from Kaggle:
+
+https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
+
+Place the file here:
+
+data/creditcard.csv
+
+
 ---
 
 ## Team Roles & Responsibilities
