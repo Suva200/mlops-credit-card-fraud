@@ -34,9 +34,10 @@ Download the dataset from Kaggle:
 https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
 
 Place the file here:
-
 data/creditcard.csv
 
+Coverage results: 
+<img width="553" height="383" alt="image" src="https://github.com/user-attachments/assets/9af34019-66a5-4cab-9f7c-bda31e4bb9a7" />
 
 ---
 
