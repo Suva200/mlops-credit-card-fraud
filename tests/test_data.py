@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 import pytest
 from src.data import DataPreprocessor
 from tests import _PATH_DATA

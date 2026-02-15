@@ -2,6 +2,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.svm import SVC
 
+
 class ModelFactory:
     @staticmethod
     def get_all_models(random_state: int = 42):

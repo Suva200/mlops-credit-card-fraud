@@ -52,9 +52,7 @@ def train(data_path: str):
 
             print(f" Evaluating {name}...")
 
-            results[name] = ModelEvaluator.compute_metrics(
-                y_test, y_pred, y_proba
-            )
+            results[name] = ModelEvaluator.compute_metrics(y_test, y_pred, y_proba)
 
             print(f"✔ {name} evaluation done.")
 
