@@ -1,5 +1,4 @@
 import os
-import pandas as pd
 import pytest
 from sklearn.linear_model import LogisticRegression
 from src.data import DataPreprocessor
@@ -37,7 +36,9 @@ def test_model_evaluator_real_data():
 
 def test_get_best_model_edge_cases():
     # Single model dict
-    best_name, best_score = ModelEvaluator.get_best_model({"only_model": {"F1-Score": 0.5}})
+    best_name, best_score = ModelEvaluator.get_best_model(
+        {"only_model": {"F1-Score": 0.5}}
+    )
     assert best_name == "only_model"
     assert best_score == 0.5
 

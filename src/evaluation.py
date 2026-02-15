@@ -5,6 +5,8 @@ from sklearn.metrics import (
     f1_score,
     roc_auc_score,
 )
+
+
 class ModelEvaluator:
     @staticmethod
     def compute_metrics(y_true, y_pred, y_proba):

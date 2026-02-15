@@ -34,11 +34,11 @@ def test_feature_engineer_real_data():
 )
 def test_feature_engineer_extra_columns():
     """
-    Pass extra columns to trigger any optional branches 
+    Pass extra columns to trigger any optional branches
     """
     df = pd.read_csv(DATA_PATH)
     X = df.drop(columns=["Class"]).copy()
-    X["Extra_Feature"] = 0  
+    X["Extra_Feature"] = 0
     fe = FeatureEngineer()
     fe.create_preprocessing_pipeline(X.columns.tolist())
 
@@ -61,6 +61,7 @@ def test_feature_engineer_empty_columns():
     fe.create_preprocessing_pipeline([])
 
     import pandas as pd
+
     df_empty = pd.DataFrame()
     X_transformed = fe.fit_transform(df_empty)
     X_transformed2 = fe.transform(df_empty)

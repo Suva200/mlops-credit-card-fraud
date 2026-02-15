@@ -18,22 +18,33 @@ def test_train_full_coverage(monkeypatch):
     df.to_csv(tmp_csv, index=False)
 
     # Patch MLflow functions
-    with patch("mlflow.set_experiment"), \
-         patch("mlflow.start_run"), \
-         patch("mlflow.log_param"), \
-         patch("mlflow.log_metric"), \
-         patch("mlflow.sklearn.log_model"):
+    with (
+        patch("mlflow.set_experiment"),
+        patch("mlflow.start_run"),
+        patch("mlflow.log_param"),
+        patch("mlflow.log_metric"),
+        patch("mlflow.sklearn.log_model"),
+    ):
 
         # Patch ModelFactory.get_all_models to return 2 small models
         from src import model as model_module
-        monkeypatch.setattr(model_module, "ModelFactory", type(
-            "FakeModelFactory",
-            (),
-            {"get_all_models": staticmethod(lambda: {
-                "logreg": LogisticRegression(max_iter=50),
-                "logreg2": LogisticRegression(max_iter=50)
-            })}
-        ))
+
+        monkeypatch.setattr(
+            model_module,
+            "ModelFactory",
+            type(
+                "FakeModelFactory",
+                (),
+                {
+                    "get_all_models": staticmethod(
+                        lambda: {
+                            "logreg": LogisticRegression(max_iter=50),
+                            "logreg2": LogisticRegression(max_iter=50),
+                        }
+                    )
+                },
+            ),
+        )
 
         results = train(tmp_csv)
 
