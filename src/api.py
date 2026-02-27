@@ -1,0 +1,16 @@
+from fastapi import FastAPI
+from src.schemas import PredictionRequest, PredictionResponse
+import joblib
+
+app = FastAPI(title="Credit Card Fraud Detection API")
+
+model = joblib.load("artifacts/best_model.pkl")
+
+@app.get("/health")
+def health():
+    return {"status": "ok"}
+
+@app.post("/predict", response_model=PredictionResponse)
+def predict(request: PredictionRequest):
+    prediction = model.predict([request.features])
+    return {"fraud_prediction": int(prediction[0])}

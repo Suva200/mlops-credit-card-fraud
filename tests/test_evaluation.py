@@ -3,7 +3,7 @@ import pytest
 from sklearn.linear_model import LogisticRegression
 from src.data import DataPreprocessor
 from src.evaluation import ModelEvaluator
-from tests import _PATH_DATA
+from src import _PATH_DATA
 
 DATA_PATH = os.path.join(_PATH_DATA, "creditcard.csv")
 

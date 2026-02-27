@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import pytest
 from src.train import train
-from tests import _PATH_DATA
+from src import _PATH_DATA
 from unittest.mock import patch
 from sklearn.linear_model import LogisticRegression
 

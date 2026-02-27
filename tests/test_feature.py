@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import pytest
 from src.features import FeatureEngineer
-from tests import _PATH_DATA
+from src import _PATH_DATA
 
 DATA_PATH = os.path.join(_PATH_DATA, "creditcard.csv")
 
