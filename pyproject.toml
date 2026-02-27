@@ -16,4 +16,7 @@ dependencies = [
     "pytest-cov>=7.0.0",
     "ruff>=0.15.1",
     "scikit-learn>=1.8.0",
+    "uvicorn",
+    "fastapi",
+    "pydantic",
 ]
