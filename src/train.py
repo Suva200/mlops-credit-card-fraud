@@ -1,4 +1,5 @@
 import json
+import os
 import joblib
 
 from src.data import DataPreprocessor
@@ -7,20 +8,33 @@ from src.model import ModelFactory
 from src.evaluation import ModelEvaluator
 
 
-def train(data_path: str):
+def train(data_path: str = "data/creditcard.csv"):
+    """
+    Train fraud detection models, select the best one,
+    save artifacts, and log to MLflow.
+    """
+
     import mlflow
     import mlflow.sklearn
 
+    # MLflow setup
     mlflow.set_experiment("credit_card_fraud_detection")
+
+    # Artifact paths
+    ARTIFACT_DIR = "artifacts"
+    os.makedirs(ARTIFACT_DIR, exist_ok=True)
+
+    model_path = os.path.join(ARTIFACT_DIR, "best_model.pkl")
+    metrics_path = os.path.join(ARTIFACT_DIR, "metrics.json")
 
     with mlflow.start_run():
 
-        print(" Loading data...")
+        print("Loading data...")
 
         dp = DataPreprocessor()
         df = dp.load_data(data_path)
 
-        #  OPTIONAL (for faster testing, uncomment if needed)
+        # Optional: use smaller sample for faster testing
         # df = df.sample(10000, random_state=42)
 
         X, y = dp.separate_features_target(df)
@@ -37,44 +51,59 @@ def train(data_path: str):
         models = ModelFactory.get_all_models()
         results = {}
 
-        print(" Starting model training...")
+        print("Starting model training...")
 
         for name, model in models.items():
-
-            print(f"\n Training {name}...")
+            print(f"\n🔹 Training {name}...")
 
             model.fit(X_train, y_train)
-
-            print(f" {name} training completed.")
 
             y_pred = model.predict(X_test)
             y_proba = model.predict_proba(X_test)[:, 1]
 
-            print(f" Evaluating {name}...")
+            results[name] = ModelEvaluator.compute_metrics(
+                y_test, y_pred, y_proba
+            )
 
-            results[name] = ModelEvaluator.compute_metrics(y_test, y_pred, y_proba)
-
-            print(f"✔ {name} evaluation done.")
+            print(f"{name} completed")
 
         print("\n Selecting best model...")
 
         best_model_name, best_score = ModelEvaluator.get_best_model(results)
 
-        print(f" Best Model: {best_model_name} (F1 Score: {best_score})")
+        print(f"Best Model: {best_model_name}")
+        print(f"Best F1 Score: {best_score}")
 
-        # Save best model
-        joblib.dump(models[best_model_name], "best_model.pkl")
+        # ----------------------------
+        # Save artifacts
+        # ----------------------------
+        joblib.dump(models[best_model_name], model_path)
 
-        # Save metrics
-        with open("metrics.json", "w") as f:
+        with open(metrics_path, "w") as f:
             json.dump(results, f, indent=2)
 
+        print(f"Model saved to {model_path}")
+        print(f"Metrics saved to {metrics_path}")
+
+        # ----------------------------
         # Log to MLflow
+        # ----------------------------
         mlflow.log_param("best_model", best_model_name)
         mlflow.log_metric("best_f1_score", best_score)
-        mlflow.sklearn.log_model(models[best_model_name], "model")
 
-        print(" Model and metrics saved.")
-        print(" Training completed successfully.")
+        mlflow.log_artifact(model_path)
+        mlflow.log_artifact(metrics_path)
 
+        mlflow.sklearn.log_model(
+            models[best_model_name],
+            artifact_path="model",
+        )
+
+        print(" MLflow logging completed")
+
+    print(" Training completed successfully")
     return results
+
+
+if __name__ == "__main__":
+    train()
