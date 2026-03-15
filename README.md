@@ -16,7 +16,7 @@ The final system allows users to send transaction features to an API endpoint an
  
 The full demonstration of the system including **CI pipeline, Docker build, application startup, and API usage** is available here:
  
-**Video Link:**
+**Video Link:** https://drive.google.com/file/d/1QaGGjoJqc_hKWc10GLLEHgk4WZRN5Cha/view?usp=sharing
 
  
 The demo video shows:
