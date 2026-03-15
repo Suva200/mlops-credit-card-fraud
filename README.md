@@ -1,97 +1,165 @@
 # MLOps pipeline for credit card fraud detection
 
-## Project Description
-
-This project implements an end-to-end **MLOps pipeline for credit card fraud detection**, The focus is on building a **reproducible, modular, and production-oriented workflow**, covering data loading, preprocessing, model training, and experiment structure.
-
-The problem is particularly challenging due to **extreme class imbalance**, where fraudulent transactions represent only **0.17%** of all records. The project emphasizes good engineering practices, leakage-free preprocessing, and appropriate evaluation metrics for imbalanced classification.
-
+## Project Overview
+ 
+This project demonstrates an end-to-end **MLOps pipeline for credit card fraud detection**. The goal is to build a reproducible machine learning system that includes **data preprocessing, model training, evaluation, experiment tracking, containerized deployment, and API-based inference**.
+ 
+The project follows modern MLOps practices including modular code structure, automated testing, containerization with Docker, and serving predictions through a REST API built with FastAPI.
+ 
+The final system allows users to send transaction features to an API endpoint and receive a prediction indicating whether the transaction is **fraudulent or legitimate**.
+ 
 ---
+ 
+# Demo Video
+ 
+🎥 **Project Demo Video**
+ 
+The full demonstration of the system including **CI pipeline, Docker build, application startup, and API usage** is available here:
+ 
+**Video Link:**
 
-## Task Definition
-
-Binary classification task to predict whether a credit card transaction is **fraudulent (1)** or **legitimate (0)**.
-
-Key challenges addressed:
-
-* Severe class imbalance
-* High cost of false negatives (missed fraud)
-* Tabular data with anonymized features
-
-The baseline implementation focuses on correctness, reproducibility, and clarity rather than maximizing model performance.
-
+ 
+The demo video shows:
+ 
+* GitHub repository overview
+* Continuous Integration pipeline
+* Docker container build and deployment
+* FastAPI application startup
+* API endpoints
+* Example prediction request and response
+ 
 ---
-
-## Dataset Source
-
-* **Dataset:** Credit Card Fraud Detection
-* **Source:** Kaggle (ULB Credit Card Dataset)
-
-The dataset contains **284,807 transactions**, with **492 fraud cases (0.17%)** and **30 numerical features**.
-
-Download the dataset from Kaggle:
-
-https://www.kaggle.com/datasets/mlg-ulb/creditcardfraud
-
-Place the file here:
-data/creditcard.csv
-
-Coverage results: 
-<img width="553" height="383" alt="image" src="https://github.com/user-attachments/assets/9af34019-66a5-4cab-9f7c-bda31e4bb9a7" />
-
+ 
+# Problem Definition & Data
+ 
+Credit card fraud detection is a **binary classification problem** where the objective is to detect fraudulent transactions among legitimate ones.
+ 
+Financial institutions must detect fraud quickly to prevent financial losses and protect customers.
+ 
+### Dataset
+ 
+This project uses the **Credit Card Fraud Detection dataset**, which contains anonymized transaction features.
+ 
+Key characteristics:
+ 
+* Highly **imbalanced dataset**
+* Fraud transactions represent a **very small percentage**
+* Requires evaluation metrics suited for imbalance such as **F1-score**
+ 
+### Target Variable
+ 
+| Value | Meaning                |
+| ----- | ---------------------- |
+| 0     | Legitimate transaction |
+| 1     | Fraudulent transaction |
+ 
 ---
-
-## Team Roles & Responsibilities
-
-Each team member is responsible for implementing a key component of the MLOps pipeline.
-
- * **Member 1 & 2 – Git Repository, Data & Preprocessing**
-
-  * GitHub setup, project structure, dependency management using **UV**
-  * *Code:* `pyproject.toml`, `uv.lock`, base structure
-  * Data loading, cleaning, preprocessing, and train/test split
-  * *Code:* `src/data.py`, `src/features.py`
-
- * **Member 3 & 4 – Model Training, Testing & Documentation**
-
-  * Model implementation, training pipeline, evaluation
-  * *Code:* `src/model.py`, `src/train.py`
-  * Project documentation and unit tests
-  * *Code:* `README.md`, `tests/`
-
-## Status
-
-Initial project setup and repository structure completed.
-
-## Model Serving (Checkpoint 3)
-
-
-### Run with Docker
-
-```bash
-docker build -t fraud-api .
-docker run -p 8000:8000 fraud-api
+ 
+# System Architecture
+ 
+The system is designed as a modular machine learning pipeline.
+ 
+### Pipeline Components
+ 
+| Component       | Description                                   |
+| --------------- | --------------------------------------------- |
+| `data.py`       | Data loading and preprocessing                |
+| `features.py`   | Feature engineering pipeline                  |
+| `model.py`      | Machine learning model definitions            |
+| `evaluation.py` | Model evaluation metrics                      |
+| `train.py`      | Training pipeline and MLflow tracking         |
+| `inference.py`  | Model loading for prediction                  |
+| `api.py`        | FastAPI service exposing prediction endpoints |
+ 
+### Workflow
+ 
 ```
-
-### API Endpoints
-
-- `GET /health` → Returns service status  
-- `POST /predict` → Returns fraud prediction  
-
-### Example Request
-
+Dataset
+   ↓
+Data Preprocessing
+   ↓
+Feature Engineering
+   ↓
+Model Training
+   ↓
+Model Evaluation
+   ↓
+Best Model Saved (artifacts/)
+   ↓
+FastAPI Service
+   ↓
+Prediction API
+```
+ 
+The trained model is saved as an artifact and later used for inference through the API.
+ 
+---
+ 
+# MLOps Practices
+ 
+This project applies several key MLOps principles.
+ 
+### Modular Code Structure
+ 
+The machine learning pipeline is divided into independent modules to improve maintainability and scalability.
+ 
+### Experiment Tracking
+ 
+MLflow is used to track:
+ 
+* Model parameters
+* Evaluation metrics
+* Trained models
+ 
+This enables reproducible experiments and comparison between models.
+ 
+### Model Artifact Management
+ 
+The best performing model is saved locally as an artifact.
+ 
+```
+artifacts/best_model.pkl
+```
+ 
+This artifact is later used by the API for inference.
+ 
+### Containerization
+ 
+Docker is used to package the application along with all dependencies. This ensures the system runs consistently across environments.
+ 
+### Automated Testing
+ 
+Unit tests are included to validate key components such as data loading and model evaluation.
+ 
+---
+ 
+# Monitoring & Reliability
+ 
+Basic monitoring mechanisms are implemented to ensure the reliability of the application.
+ 
+### Health Check Endpoint
+ 
+The API includes a `/health` endpoint that allows monitoring tools to verify whether the service is running.
+ 
+Example response:
+ 
 ```json
 {
-  "features": [0.0, -1.35, -0.07, 2.53, 1.37, -0.33, 0.46, 0.23, 0.09, 0.36,
-  0.09, -0.55, -0.61, -0.99, -0.31, 1.46, -0.47, 0.20, 0.02, 0.40,
-  0.25, -0.01, 0.27, -0.11, 0.06, -0.14, -0.06, -0.06, 0.12, 149.62]
+  "status": "ok"
 }
 ```
-
-### Example Response
-
-```json
-{
-  "fraud_prediction": 0
-}
-```
+ 
+### Logging
+ 
+The application logs important events including:
+ 
+* Model loading
+* Prediction requests
+* Prediction outputs
+* Errors during inference
+ 
+Logging helps identify issues and track system behavior.
+ 
+### Error Handling
+ 
+The system checks whether the trained model artifact exists before loading it. If the model is missing, the application raises an exception to prevent incorrect pred
